@@ -26,6 +26,19 @@ Apply migrations:
 php yii migrate --migrationPath=@vendor/albertgeeca/yii2-language-manager/src/migrations
 ```
 
+To access the module, you need to add this to your application configuration:
+
+```
+    ......
+    'modules' => [
+        'language' => [
+            'class' => 'albertgeeca\language_manager\src\backend\Module',
+        ],
+    ],
+    ......
+```
+
+
 Usage
 -----
 
