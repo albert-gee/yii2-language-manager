@@ -21,6 +21,10 @@ or add
 
 to the require section of your `composer.json` file.
 
+Apply migrations:
+```
+php yii migrate --migrationPath=@vendor/albertgeeca/yii2-language-manager/src/migrations
+```
 
 Usage
 -----
