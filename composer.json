@@ -1,0 +1,21 @@
+{
+    "name": "albertgeeca/yii2-language-manager",
+    "description": "Language manager for Yii2 framework. Allows to add languages that can be used in other extensions.",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","language","locale"],
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Albert Gee",
+            "email": "albert.gee.ca@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "albertgeeca\\language_manager\\": ""
+        }
+    }
+}
