@@ -32,7 +32,7 @@ class Language extends \yii\db\ActiveRecord
             [['locale'], 'required'],
             [['locale'], 'unique'],
 
-            [['is_default', 'is_archived'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
+            [['is_default', 'is_archived'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['is_default', 'is_archived'], 'default', 'value' => false],
 
             [['locale'], 'string', 'max' => 6],
