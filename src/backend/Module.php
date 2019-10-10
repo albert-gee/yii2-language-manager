@@ -38,7 +38,7 @@ class Module extends \yii\base\Module
             [
                 'class' => \yii\i18n\PhpMessageSource::className(),
                 'sourceLanguage' => 'en-US',
-                'basePath' => '@vendor/albertgeeca/yii2-language-manager/backend/messages'
+                'basePath' => '@vendor/albertgeeca/yii2-language-manager/src/backend/messages'
             ];
     }
 }
