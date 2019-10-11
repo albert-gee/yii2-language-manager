@@ -1,10 +1,10 @@
 <?php
-
 namespace albertgeeca\language_manager\src\backend\controllers;
 
 use Yii;
 use albertgeeca\language_manager\src\common\entities\Language;
 use albertgeeca\language_manager\src\common\models\SearchModel;
+use yii\base\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -53,7 +53,7 @@ class MainController extends Controller
      */
     public function actionSave(int $id = null)
     {
-        $languageModel = (!empty($id)) ? Language::findOne($id) : new Language();
+        $languageModel = (!empty($id)) ? Language::findModel($id) : new Language();
 
         if ($languageModel->load(Yii::$app->request->post()) && $languageModel->save()) {
 
@@ -67,16 +67,49 @@ class MainController extends Controller
     }
 
     /**
-     * Deletes an existing Language model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * Deletes a not default Language model. If deletion has been successful, the browser will be redirected to the 'index' page
+     * @param int $id - ID of the Language to be deleted
+     * @return \yii\web\Response
+     * @throws Exception - if you attemp to delete default language
+     * @throws NotFoundHttpException - if Language with such ID was not found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
-        $this->findModel($id)->delete();
-
+        $language = Language::findModel($id);
+        if ($language->is_default) {
+            throw new Exception(Yii::t('language', 'You can not delete default language'));
+        }
+        $language->delete();
         return $this->redirect(['index']);
     }
+
+    /**
+     * Makes language default
+     * @param $id - ID of the language to be set as default
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if Language with such ID does not exist
+     */
+    public function actionSwitchDefault(int $id)
+    {
+        Language::switchDefault($id);
+        return $this->redirect(\Yii::$app->request->referrer);
+    }
+
+    /**
+     * Archives or unarchives Language by its ID
+     * @param $id - ID of the language to be archived
+     * @throws NotFoundHttpException if Language with such ID does not exist
+     */
+    public function actionArchive(int $id)
+    {
+        $language = Language::findModel($id);
+        $language->is_archived = $language->is_archived ? false : true;
+        $language->save();
+        return $this->redirect(\Yii::$app->request->referrer);
+    }
+
+
+
 }
