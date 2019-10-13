@@ -58,6 +58,8 @@ class Language extends ActiveRecord
     }
 
     /**
+     * Prevents adding default archived language because default language can not be archived.
+     * In case of adding new default language, current default language is set to not default
      * @inheritdoc
      */
     public function beforeSave($insert)
@@ -66,7 +68,7 @@ class Language extends ActiveRecord
 
             if ($this->is_default) {
                 if ($this->is_archived) {
-                    throw new Exception(Yii::t("language", "Default language can not be archived"));
+                    throw new Exception(Yii::t("language", 'Default language can not be archived'));
                 }
                 $currentDefault = Language::findOne(['is_default' => true]);
                 if ($currentDefault == null) {
@@ -80,6 +82,22 @@ class Language extends ActiveRecord
         } else {
             return false;
         }
+    }
+
+    /**
+     * Prevents deleting of default language
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if ($this->is_default) {
+            throw new Exception(Yii::t('language', 'Default language can not be deleted'));
+        }
+        return true;
     }
 
     /**
