@@ -17,7 +17,7 @@ $this->title = Yii::t('language', 'Language manager');
 <?= $this->render('_form',
     [
         'languageModel' => new \albertgeeca\language_manager\src\common\entities\Language(),
-        'backButtonUrl' => \yii\helpers\Url::to('/language/main')
+        'backButtonUrl' => Url::to('/language/main')
     ]); ?>
 
 
@@ -31,13 +31,30 @@ $this->title = Yii::t('language', 'Language manager');
             'filterModel' => $searchModel,
             'id' => 'language-list',
             'emptyCell'=>'',
+            'showFooter' => true,
 
             'columns' => [
                 // CHECKBOXES
-                ['class' => 'yii\grid\CheckboxColumn'],
+                [
+                    'class' => 'yii\grid\CheckboxColumn',
+                    'footer' => Html::button(
+                            '<i class="glyphicon glyphicon-remove">',
+                            ['id' => 'delete-rows', 'class' => 'btn btn-danger btn-sm', 'data-url' => Url::to('/language/main/delete-multiple')]),
+                    'headerOptions' => ['class' => 'col-md-1 text-center'],
+                    'contentOptions' => ['class' => 'text-center'],
+                    'footerOptions' => ['class' => 'text-center'],
+                    'content' => function ($model, $key, $index, $column) {
+                        $disabled = $model->is_default ? true : false;
+                        return Html::checkbox($column->name, false, ['disabled' => $disabled]);
+                    }
+                ],
 
                 // #
-                ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'class' => 'yii\grid\SerialColumn',
+                    'headerOptions' => ['class' => 'col-md-1 text-center'],
+                    'contentOptions' => ['class' => 'text-center'],
+                ],
 
                 // LOCALE
                 [
@@ -46,7 +63,7 @@ $this->title = Yii::t('language', 'Language manager');
                         return Html::a($model->locale, Url::toRoute(['main/save', 'id' => $model->id]));
                     },
                     'format' => 'html',
-                    'headerOptions' => ['class' => 'text-center'],
+                    'headerOptions' => ['class' => 'col-md-3 text-center'],
                     'contentOptions' => ['class' => 'text-center']
                 ],
                 // DEFAULT
@@ -54,7 +71,7 @@ $this->title = Yii::t('language', 'Language manager');
                     'filter' => ["1" => "Default", "0" => "Not default"],
                     'filterInputOptions' => ['class' => 'form-control', 'prompt' => Yii::t('language', 'All')],
                     'attribute' => 'is_default',
-                    'headerOptions' => ['class' => 'text-center'],
+                    'headerOptions' => ['class' => 'col-md-3 text-center'],
                     'contentOptions' => ['class' => 'text-center'],
                     'format' => 'html',
                     'value' => function($model) {
@@ -69,7 +86,7 @@ $this->title = Yii::t('language', 'Language manager');
                     'filter' => ["1" => "Default", "0" => "Not default"],
                     'filterInputOptions' => ['class' => 'form-control', 'prompt' => Yii::t('language', 'All')],
                     'attribute' => 'is_archived',
-                    'headerOptions' => ['class' => 'text-center'],
+                    'headerOptions' => ['class' => 'col-md-3 text-center'],
                     'contentOptions' => ['class' => 'text-center'],
                     'format' => 'html',
                     'value' => function($model) {
@@ -83,6 +100,8 @@ $this->title = Yii::t('language', 'Language manager');
                 // ACTION BUTTONS
                 [
                     'class' => 'yii\grid\ActionColumn',
+                    'headerOptions' => ['class' => 'col-md-1'],
+                    'contentOptions' => ['class' => 'text-center'],
                     'template' => '{save} {delete}',
                     'buttons' => [
                         'save' => function($url, $model){
@@ -101,7 +120,7 @@ $this->title = Yii::t('language', 'Language manager');
                             return $button;
                         }
                     ]
-                ],
+                ]
             ]
         ]); ?>
     </div>

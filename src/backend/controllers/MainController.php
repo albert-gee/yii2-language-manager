@@ -8,6 +8,7 @@ use yii\base\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * DefaultController implements the CRUD actions for Language model.
@@ -77,12 +78,29 @@ class MainController extends Controller
      */
     public function actionDelete(int $id)
     {
-        $language = Language::findModel($id);
-        if ($language->is_default) {
-            throw new Exception(Yii::t('language', 'You can not delete default language'));
-        }
-        $language->delete();
+        $language = Language::findModel($id)>delete();
+
         return $this->redirect(['index']);
+    }
+
+    public function actionDeleteMultiple()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $data = \Yii::$app->request->post();
+            $deletedIDs = [];
+
+            foreach ($data['data'] as $id) {
+                if(Language::findModel($id)->delete()) {
+                    $deletedIDs[] = $id;
+                }
+            }
+
+            return $deletedIDs;
+        } else {
+            throw new NotFoundHttpException();
+        }
     }
 
     /**
